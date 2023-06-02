@@ -73,11 +73,30 @@ class TweetDb:
         self.db.commit()
 
     # UPDATE TABLES
+    def update_table(self, table:str, values, where:str):
+        
+        columns = self.select_column_names(table=table, exclude_increment=True)
+
+        set_string = ''
+        
+        for column, value in zip(columns, values):
+            string = str(column) + "='" + str(value) + "', "
+            set_string += string
+        
+        set_string = set_string[:-2]
+
+        query = "UPDATE " + table + " SET " + set_string + " WHERE " + where 
+        
+        self.db.execute_query(query)
+        self.db.commit()
+
+
         
 if __name__ == '__main__':
     
     TweetDb().select_table(table='twitter_raw', columns=['pk','tweet_tweetid_'], latest=True, latest_id='pk')
     TweetDb().select_table(table='twitter_raw', columns=['pk','user_userid_'])
-    TweetDb().select_table(table='twitter_raw', columns=['user_username'], where='pk < 5')
+    print(TweetDb().select_table(table='twitter_raw', where='pk < 5'))
+    (TweetDb().select_column_names(table='twitter_raw', exclude_increment=False))
 
 

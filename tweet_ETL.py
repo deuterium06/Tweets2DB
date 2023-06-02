@@ -80,8 +80,8 @@ def transform_load_data(raw_tweets_table, raw_users_table, raw_tf_table):
                     return True
 
                 if not check_lists_equal(old_row,new_row):
-                    #db.update_table(table='users', columns=user_columns, values=new_row, where='userid_=' + str(row[0]))	
-                    pass
+                    db.update_table(table='users', values=new_row, where='userid_=' + str(row[0]))
+
             else:
                 user_values.append(row)
     
@@ -112,11 +112,11 @@ def transform_load_data(raw_tweets_table, raw_users_table, raw_tf_table):
             #check if tweet is existing in tweet_facts table
             if value[0] in tweetid_db:    
                 old_row = db.select_table(table='tweet_facts', columns=tf_columns, where='tweetid=' + str(value[0]))[0]
-                new_row = row
+                new_row = value
 
                 if not check_lists_equal(old_row,new_row):
-                    #db.update_table(table='tweet_facts', columns=tf_columns, values=new_row, where='tweetid=' + str(value[0]))	
-                    pass
+                    db.update_table(table='tweet_facts', values=new_row, where='tweetid=' + str(value[0]))
+           
             else:		        
                 tweet_facts_values.append(value)
 
