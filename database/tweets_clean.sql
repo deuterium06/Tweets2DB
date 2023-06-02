@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS tweets (
     `language` varchar(50) DEFAULT NULL,
     created timestamp NULL,
     date_added timestamp DEFAULT CURRENT_TIMESTAMP,
-    date_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    date_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT tweetid_unique UNIQUE (tweetid_)
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -41,5 +42,6 @@ CREATE TABLE IF NOT EXISTS users (
     friends_count int,
     statuses_count int,
     date_added timestamp DEFAULT CURRENT_TIMESTAMP,
-    date_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    date_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT userid_unique UNIQUE (userid_)
 );
