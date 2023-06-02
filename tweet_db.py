@@ -19,10 +19,10 @@ class TweetDb:
     # SELECT TABLES 
     def select_column_names(self, table:str, exclude_increment=False):
 
-        query = "SELECT column_name FROM information_schema.columns WHERE table_name ='" + table +"'"
+        query = "SELECT column_name FROM information_schema.columns WHERE table_schema = 'tweets' AND table_name ='" + table +"'"
         
         if exclude_increment:
-            query += " AND column_name NOT IN ('pk','date_added','date_updated')"
+            query += " AND column_name NOT IN ('pk','date_added','date_updated','id')"
         
         query += " ORDER BY ordinal_position"
 
@@ -48,15 +48,15 @@ class TweetDb:
             else:
                 query += " ORDER BY date_added DESC LIMIT 1"
             
-            items = self.db.execute_query(query)[0]
-        
-        else:
-            items = self.db.execute_query(query)
+        items = self.db.execute_query(query)
+
 
         if len(columns) == 1:
             items = [item[0] for item in items]
+        else:
+            items = [[i for i in item] for item in items]
 
-        print(items)
+        return items
        
     # INSERT TABLES
     def insert_table(self, table:str, values):
@@ -67,7 +67,7 @@ class TweetDb:
             repeated_value = (str(value) + ',') * number
             return repeated_value[:-1]
 
-        query = "INSERT INTO " + table + "({})".format(', '.join(columns)) + " VALUES (" + repeat_string("%s", len(columns))  + ")"
+        query = "INSERT IGNORE INTO " + table + "({})".format(', '.join(columns)) + " VALUES (" + repeat_string("%s", len(columns))  + ")"
 
         self.db.execute_many(query, values)
         self.db.commit()
@@ -76,8 +76,8 @@ class TweetDb:
         
 if __name__ == '__main__':
     
-    TweetDb().select_table(table='twitter_raw', columns=['pk','tweet_id'], latest=True, latest_id='pk')
-    TweetDb().select_table(table='twitter_raw', columns=['pk','tweet_id'])
-    TweetDb().select_table(table='twitter_raw', columns=['username'], where='pk < 5')
+    TweetDb().select_table(table='twitter_raw', columns=['pk','tweet_tweetid_'], latest=True, latest_id='pk')
+    TweetDb().select_table(table='twitter_raw', columns=['pk','user_userid_'])
+    TweetDb().select_table(table='twitter_raw', columns=['user_username'], where='pk < 5')
 
 
