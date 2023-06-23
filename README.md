@@ -1,2 +1,3 @@
 
-A project repo for scraping tweets using snscrape Python library & then storing tweets into MYSQL database.
+Personal repo for scraping tweets using Snscrape repo & then storing tweets into MYSQL database.
+Check out repo source <a href='https://github.com/JustAnotherArchivist/snscrape'>here</a>.
