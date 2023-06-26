@@ -3,7 +3,7 @@ import pymysql
 import os 
 
 from utils.credentials import Credentials
-from utils.constants import LOCAL_ENV, LOCAL_DB
+from utils.constants import LOCAL_ENV, LOCAL_DB, CI_ENV, DEPLOY_ENV
 
 ENV = os.getenv('ENV')
 
@@ -11,7 +11,15 @@ class MySQLDB:
 
     def __init__(self,cursorclass='', *args, **kwargs):
 
-        if ENV == LOCAL_ENV:
+        if ENV == CI_ENV or ENV == DEPLOY_ENV:
+            self.db = pymysql.connect(
+                host=os.getenv('DB_HOST', ''),
+                user=os.getenv('DB_USER', ''),
+                password=os.getenv('DB_PASS', ''),
+                database=os.getenv('DB_NAME', ''),
+                port=int(os.getenv('DB_PORT', 0)) or 0,
+            )
+        else:
             cred = Credentials().database(LOCAL_DB)
             self.db = pymysql.connect(
                 host=cred["DB_HOST"],
@@ -20,15 +28,6 @@ class MySQLDB:
                 database=cred["DB_NAME"],
                 port=cred["DB_PORT"],
                 cursorclass=self.__set_cursorclass(cursorclass)                
-            )
-        else:
-            # CI_ENV OR RDS_ENV
-            self.db = pymysql.connect(
-                host=os.getenv('DB_HOST', ''),
-                user=os.getenv('DB_USER', ''),
-                password=os.getenv('DB_PASS', ''),
-                database=os.getenv('DB_NAME', ''),
-                port=int(os.getenv('DB_PORT', 0)) or 0,
             )
 
     def __set_cursorclass(self, cursorclass):
